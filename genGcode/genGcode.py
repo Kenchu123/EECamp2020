@@ -12,8 +12,8 @@ class Piture():
         self.h,self.w,self.c=self.img.shape
         self.pre=np.ones(self.img.shape)
         self.gcode=['G28']
-        self.x_max=150
-        self.y_max=150
+        self.x_max=50
+        self.y_max=50
     #----------------------convert to gray scale----------------------------
     def gray_scale(self):
         print('RBG to gray scale...')
@@ -67,16 +67,16 @@ class Piture():
         path=bmp.trace()
         for curve in path:
             ratio=self.x_max/max(self.w,self.h) #normalize for drawing machine
-            self.gcode.append('U') #抬筆
+            self.gcode.append('M280 P0 S0') #抬筆
             self.gcode.append('G0 X%.4f Y%.4f'%(curve.start_point[0]*ratio,curve.start_point[1]*ratio)) #移動到起始點
-            self.gcode.append('D') #下筆
+            self.gcode.append('M280 P0 S60') #下筆
             for segment in curve:
                 if segment.is_corner:
                     self.gcode.append('G1 X%.4f Y%.4f'%(segment.c[0]*ratio,segment.c[1]*ratio)) #畫至corner的轉角點
                     self.gcode.append('G1 X%.4f Y%.4f'%(segment.end_point[0]*ratio,segment.end_point[1]*ratio)) #畫至corner的終點
                 else:
                     self.gcode.append('G1 X%.4f Y%.4f'%(segment.end_point[0]*ratio,segment.end_point[1]*ratio)) #畫至Bezier segment的終點
-        self.gcode.append('U') #抬筆
+        self.gcode.append('M280 P0 S0') #抬筆
         return self.gcode
     
     def save_gcode(self):
