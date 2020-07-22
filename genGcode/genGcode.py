@@ -65,7 +65,9 @@ class Piture():
         print('generate gcode...')
         bmp=potrace.Bitmap(self.pre[:,:,0])
         path=bmp.trace()
+        flag = 0
         for curve in path:
+            
             ratio=self.x_max/max(self.w,self.h) #normalize for drawing machine
             self.gcode.append('M280 P0 S0') #抬筆
             self.gcode.append('G0 X%.4f Y%.4f'%(curve.start_point[0]*ratio,curve.start_point[1]*ratio)) #移動到起始點
@@ -75,7 +77,11 @@ class Piture():
                     self.gcode.append('G1 X%.4f Y%.4f'%(segment.c[0]*ratio,segment.c[1]*ratio)) #畫至corner的轉角點
                     self.gcode.append('G1 X%.4f Y%.4f'%(segment.end_point[0]*ratio,segment.end_point[1]*ratio)) #畫至corner的終點
                 else:
-                    self.gcode.append('G1 X%.4f Y%.4f'%(segment.end_point[0]*ratio,segment.end_point[1]*ratio)) #畫至Bezier segment的終點
+                    if flag%4==0:
+                        self.gcode.append('G1 X%.4f Y%.4f'%(segment.end_point[0]*ratio,segment.end_point[1]*ratio)) #畫至Bezier segment的終點
+                        flag+=1
+                    else:
+                        flag+=1
         self.gcode.append('M280 P0 S0') #抬筆
         return self.gcode
     
@@ -85,7 +91,7 @@ class Piture():
                 f.write('%s\n'%self.gcode[i])
 
 if __name__=='__main__':
-    pic=Piture('img/bear.jpg') #輸入圖片的路徑
+    pic=Piture('img/square.jpg') #輸入圖片的路徑
     pic.gray_scale()
     pic.prewiit()
     pic.denoise()
