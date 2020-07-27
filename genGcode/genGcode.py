@@ -8,6 +8,7 @@ from scipy.ndimage.morphology import binary_fill_holes
 import cv2
 from PIL import Image
 from PIL import ImageFilter
+import matplotlib.image as mpimg
 
 
 
