@@ -344,16 +344,19 @@ class Picture():
     def red(self):
         self.im_R = self.im.copy()
         self.im_R[:, :, (1, 2)] = 0
+        self.im = self.im_R.copy()
         return self.im_R
 
     def green(self):
         self.im_G = self.im.copy()
         self.im_G[:, :, (0, 2)] = 0
+        self.im = self.im_G.copy()
         return self.im_G
 
     def blue(self):
         self.im_B = self.im.copy()
         self.im_B[:, :, (0, 1)] = 0
+        self.im = self.im_B.copy()
         return self.im_B
 
     def rgb(self):
@@ -580,6 +583,7 @@ class Picture():
         self.im_black = np.array(Image.open(self.path).convert('L'))
         self.im_black = (self.im_black > th) * 255
         self.im_black = np.uint8(self.im_black)
+        self.im = self.im_black.copy()
 
     def color_binarize(self, th, r, g, b):
         im_bool = self.im > th
@@ -589,6 +593,7 @@ class Picture():
         self.im_color[:, :, 1] = im_bool[:, :, 1] * g
         self.im_color[:, :, 2] = im_bool[:, :, 2] * b
         self.im_color = np.uint8(self.im_color)
+        self.im = self.im_color.copy()
 
     def alpha(self, name, ratio):
         src = np.array(Image.open(self.files[name]).resize(self.im.shape[1::-1], Image.BILINEAR))
@@ -597,11 +602,13 @@ class Picture():
             src = src[:, :, :-1]
         self.im_alpha = self.im * (1 - ratio) + src * (ratio)
         self.im_alpha = np.uint8(self.im_alpha)
+        self.im = self.im_alpha.copy()
 
     def gamma(self, val):
         im = np.array(Image.open(self.path), 'f')
         self.im_gamma = 255.0 * (im / 255.0) ** val
         self.im_gamma = np.uint8(self.im_gamma)
+        self.im = self.im_gamma.copy()
 
     ################################################################
     '''
