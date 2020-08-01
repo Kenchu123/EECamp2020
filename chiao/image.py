@@ -31,7 +31,7 @@ class Picture():
             m = input(">> Please choose an option: ")
             print()
             if m == '0':
-                Image.fromarray(self.im).show()
+                self.show()
             elif m == '1':
                 try: 
                     while True:
@@ -292,6 +292,9 @@ class Picture():
             filename without the file extension. (Ex. test.png -> test is the name)
     '''
     ###########################################################################
+    def show(self):
+        Image.fromarray(self.im).show()
+
     # read an image into the class and print some information
     def read(self, name, path):
         self.im = np.array(Image.open(path))
@@ -476,8 +479,11 @@ class Picture():
     def trimming(self, x, y, w, h):
         self.im = self.im[y:y + h, x:x + w]
 
-    def cut(self, x, y, w, h):
-        self.im[y:y + h, x:x + w] = 0
+    def cut(self, x, y, w, h, type = 'white'):
+        if type == 'white':
+            self.im[y:y + h, x:x + w] = 255
+        else:
+            self.im[y:y + h, x:x + w] = 0
 
     def paste(self, name, x, y, w, h):
         src = np.array(Image.open(self.files[name]))
